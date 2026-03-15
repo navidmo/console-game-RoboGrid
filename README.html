@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Java Workshop 04: Simple Console Game — Soft Robot Controller</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="scripts/readme-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Java Workshop 04: Simple Console Game — Soft Robot
+Controller</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a
+href="#java-workshop-04-simple-console-game-soft-robot-controller"
+id="toc-java-workshop-04-simple-console-game-soft-robot-controller">Java
+Workshop 04: Simple Console Game: Soft Robot Controller</a>
+<ul>
+<li><a href="#table-of-contents" id="toc-table-of-contents">Table of
+Contents</a></li>
+<li><a href="#big-idea" id="toc-big-idea">Big Idea</a></li>
+<li><a href="#concepts-covered" id="toc-concepts-covered">Concepts
+Covered</a></li>
+<li><a href="#quick-start" id="toc-quick-start">Quick Start</a></li>
+<li><a href="#figures" id="toc-figures">Figures</a>
+<ul>
+<li><a href="#class-relationships" id="toc-class-relationships">Class
+relationships</a></li>
+<li><a href="#data-flow" id="toc-data-flow">Data flow</a></li>
+<li><a href="#sample-flow-of-one-turn"
+id="toc-sample-flow-of-one-turn">Sample flow of one turn</a></li>
+</ul></li>
+<li><a href="#project-story" id="toc-project-story">Project
+Story</a></li>
+<li><a href="#high-level-structure"
+id="toc-high-level-structure">High-Level Structure</a>
+<ul>
+<li><a href="#domain-layer" id="toc-domain-layer">1. Domain
+layer</a></li>
+<li><a href="#game-logic-layer" id="toc-game-logic-layer">2. Game logic
+layer</a></li>
+<li><a href="#ui-layer" id="toc-ui-layer">3. UI layer</a></li>
+</ul></li>
+<li><a href="#files-that-you-may-want-to-pay-attention-to"
+id="toc-files-that-you-may-want-to-pay-attention-to">Files that you may
+want to pay attention to:</a>
+<ul>
+<li><a href="#srcposition.java"
+id="toc-srcposition.java"><code>src/Position.java</code></a></li>
+<li><a href="#srcdirection.java"
+id="toc-srcdirection.java"><code>src/Direction.java</code></a></li>
+<li><a href="#srccommand.java"
+id="toc-srccommand.java"><code>src/Command.java</code></a></li>
+<li><a href="#srccommandresult.java"
+id="toc-srccommandresult.java"><code>src/CommandResult.java</code></a></li>
+<li><a href="#srcrobot.java"
+id="toc-srcrobot.java"><code>src/Robot.java</code></a></li>
+<li><a href="#srcgrid.java"
+id="toc-srcgrid.java"><code>src/Grid.java</code></a></li>
+<li><a href="#srcrobotcontroller.java"
+id="toc-srcrobotcontroller.java"><code>src/RobotController.java</code></a></li>
+<li><a href="#srcgamesetup.java"
+id="toc-srcgamesetup.java"><code>src/GameSetup.java</code></a></li>
+<li><a href="#srcrandomlevelfactory.java"
+id="toc-srcrandomlevelfactory.java"><code>src/RandomLevelFactory.java</code></a></li>
+<li><a href="#srcrobotgame.java"
+id="toc-srcrobotgame.java"><code>src/RobotGame.java</code></a></li>
+</ul></li>
+<li><a href="#how-to-run-it" id="toc-how-to-run-it">How to Run
+It</a></li>
+<li><a href="#how-the-lanterna-source-works"
+id="toc-how-the-lanterna-source-works">How the Lanterna source
+works</a></li>
+<li><a href="#automated-testing" id="toc-automated-testing">Automated
+Testing</a></li>
+<li><a href="#controls" id="toc-controls">Controls</a></li>
+<li><a href="#how-the-program-runs" id="toc-how-the-program-runs">How
+The Program Runs</a>
+<ul>
+<li><a href="#step-1.-main-creates-the-lanterna-screen"
+id="toc-step-1.-main-creates-the-lanterna-screen">Step 1.
+<code>main</code> creates the Lanterna screen</a></li>
+<li><a href="#step-2.-rungameloop...-creates-the-first-game"
+id="toc-step-2.-rungameloop...-creates-the-first-game">Step 2.
+<code>runGameLoop(...)</code> creates the first game</a></li>
+<li><a href="#step-3.-the-loop-repeats-forever-until-the-player-quits"
+id="toc-step-3.-the-loop-repeats-forever-until-the-player-quits">Step 3.
+The loop repeats forever until the player quits</a></li>
+<li><a href="#step-4.-keys-are-translated-into-commands"
+id="toc-step-4.-keys-are-translated-into-commands">Step 4. Keys are
+translated into commands</a></li>
+<li><a href="#step-5.-the-controller-applies-the-rules"
+id="toc-step-5.-the-controller-applies-the-rules">Step 5. The controller
+applies the rules</a></li>
+<li><a href="#step-6.-a-commandresult-comes-back"
+id="toc-step-6.-a-commandresult-comes-back">Step 6. A
+<code>CommandResult</code> comes back</a></li>
+<li><a href="#step-7.-the-next-frame-is-drawn"
+id="toc-step-7.-the-next-frame-is-drawn">Step 7. The next frame is
+drawn</a></li>
+</ul></li>
+<li><a href="#how-random-map-generation-works"
+id="toc-how-random-map-generation-works">How Random Map Generation
+Works</a>
+<ul>
+<li><a href="#goal" id="toc-goal">Goal</a></li>
+<li><a href="#the-algorithm" id="toc-the-algorithm">The
+algorithm</a></li>
+<li><a href="#why-build-a-safe-path-first"
+id="toc-why-build-a-safe-path-first">Why build a safe path
+first?</a></li>
+</ul></li>
+<li><a href="#how-drawing-works" id="toc-how-drawing-works">How Drawing
+Works</a>
+<ul>
+<li><a href="#main-drawing-methods" id="toc-main-drawing-methods">Main
+drawing methods</a></li>
+<li><a href="#why-do-we-use-safeputstring..."
+id="toc-why-do-we-use-safeputstring...">Why do we use
+<code>safePutString(...)</code>?</a></li>
+<li><a href="#why-do-we-call-screen.doresizeifnecessary"
+id="toc-why-do-we-call-screen.doresizeifnecessary">Why do we call
+<code>screen.doResizeIfNecessary()</code>?</a></li>
+</ul></li>
+<li><a href="#oop-lessons-in-this-project"
+id="toc-oop-lessons-in-this-project">OOP Lessons In This Project</a>
+<ul>
+<li><a href="#encapsulation" id="toc-encapsulation">1.
+Encapsulation</a></li>
+<li><a href="#separation-of-concerns" id="toc-separation-of-concerns">2.
+Separation of concerns</a></li>
+<li><a href="#abstraction" id="toc-abstraction">3. Abstraction</a></li>
+<li><a href="#composition" id="toc-composition">4. Composition</a></li>
+<li><a href="#immutability" id="toc-immutability">5.
+Immutability</a></li>
+</ul></li>
+<li><a href="#suggested-reading-order-for-students"
+id="toc-suggested-reading-order-for-students">Suggested Reading Order
+For Students</a></li>
+<li><a href="#a-full-example-of-one-key-press"
+id="toc-a-full-example-of-one-key-press">A Full Example Of One Key
+Press</a>
+<ul>
+<li><a href="#what-happens" id="toc-what-happens">What happens?</a></li>
+</ul></li>
+<li><a href="#make-sure-you-understand"
+id="toc-make-sure-you-understand">Make sure you understand:</a></li>
+<li><a href="#ideas-for-game-extensions"
+id="toc-ideas-for-game-extensions">Ideas for Game Extensions</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="java-workshop-04-simple-console-game-soft-robot-controller">Java
+Workshop 04: Simple Console Game: Soft Robot Controller</h1>
+<p>This project is a <strong>software-only robot</strong> that lives in
+your terminal: no hardware, no sensors—just a virtual robot on a grid.
+You control it with the keyboard: turn left or right, then move forward
+one step at a time. The idea is deliberately simple (robot-on-a-grid) so
+we can focus on clear class design, separation of concerns, and how
+input and game rules work together.</p>
+<p>The robot has a position, a direction, and a set of keyboard
+controls. Each time the game starts, it builds a fresh random map with a
+guaranteed safe route to the goal, so you get a new puzzle every
+run.</p>
+<p>This README is written as a <strong>teaching guide</strong> for
+students. It is deliberately a bit verbose: the goal is to walk you
+through the design and the code, not just list facts. In the following
+sections you will find:</p>
+<ul>
+<li>what each class is responsible for</li>
+<li>how the objects work together</li>
+<li>how keyboard input becomes robot movement</li>
+<li>how the random grid is generated</li>
+<li>how Lanterna is used to draw the terminal UI</li>
+<li>how automated testing works (including end-to-end tests with a
+virtual terminal)</li>
+</ul>
+<p>To make the <strong>console</strong> feel like a real interactive
+game instead of a stream of <code>println</code> output, we use an
+external library—similar to how C programs use <strong>ncurses</strong>
+to build terminal UIs. In this project we use <strong>Lanterna</strong>,
+a Java library that turns the terminal into a controllable display and
+keyboard-driven application. That way we can focus on OOP design and
+game logic while the library handles the low-level details of talking to
+the console.</p>
+<p>Lanterna gives us:</p>
+<ul>
+<li><strong>A buffered screen</strong> — we draw to an off-screen buffer
+and then refresh, so the game can redraw the whole grid and sidebar in
+one go instead of appending line by line.</li>
+<li><strong>Structured keyboard input</strong> — key presses become
+objects (e.g. <code>KeyStroke</code> with type <code>ARROW_UP</code> or
+<code>CHARACTER 'w'</code>) instead of raw bytes, so our code can map
+keys to commands cleanly.</li>
+<li><strong>Terminal size and resize handling</strong> — we can detect
+when the user resizes the window and adjust the layout (e.g. put the
+sidebar beside the grid or below it) so the game still fits.</li>
+<li><strong>Virtual terminals for testing</strong> — tests can use a
+fake terminal in memory, feed scripted key presses, and assert on the
+result without a human at the keyboard.</li>
+</ul>
+<p>Later sections (including “How The Vendored Lanterna Source Works”)
+go into more detail. The main idea here is: we use Lanterna so the
+console becomes a proper interactive playground for our toy robot, and
+so students can see how a real UI library fits into an OOP design.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#big-idea">Big Idea</a></li>
+<li><a href="#concepts-covered">Concepts Covered</a></li>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#figures">Figures</a>
+<ul>
+<li><a href="#class-relationships">Class relationships</a></li>
+<li><a href="#data-flow">Data flow</a></li>
+<li><a href="#sample-flow-of-one-turn">Sample flow of one turn</a></li>
+</ul></li>
+<li><a href="#project-story">Project Story</a></li>
+<li><a href="#high-level-structure">High-Level Structure</a>
+<ul>
+<li><a href="#1-domain-layer">1. Domain layer</a></li>
+<li><a href="#2-game-logic-layer">2. Game logic layer</a></li>
+<li><a href="#3-ui-layer">3. UI layer</a></li>
+</ul></li>
+<li><a href="#files-that-you-may-want-to-pay-attention-to">Files that
+you may want to pay attention to</a></li>
+<li><a href="#how-to-run-it">How to Run It</a></li>
+<li><a href="#how-the-lanterna-source-works">How the Lanterna source
+works</a></li>
+<li><a href="#automated-testing">Automated Testing</a></li>
+<li><a href="#controls">Controls</a></li>
+<li><a href="#how-the-program-runs">How The Program Runs</a>
+<ul>
+<li><a href="#step-1-main-creates-the-lanterna-screen">Step 1. main
+creates the Lanterna screen</a></li>
+<li><a href="#step-2-rungameloop-creates-the-first-game">Step 2.
+runGameLoop creates the first game</a></li>
+<li><a
+href="#step-3-the-loop-repeats-forever-until-the-player-quits">Step 3.
+The loop repeats until the player quits</a></li>
+<li><a href="#step-4-keys-are-translated-into-commands">Step 4. Keys are
+translated into commands</a></li>
+<li><a href="#step-5-the-controller-applies-the-rules">Step 5. The
+controller applies the rules</a></li>
+<li><a href="#step-6-a-commandresult-comes-back">Step 6. A CommandResult
+comes back</a></li>
+<li><a href="#step-7-the-next-frame-is-drawn">Step 7. The next frame is
+drawn</a></li>
+</ul></li>
+<li><a href="#how-random-map-generation-works">How Random Map Generation
+Works</a>
+<ul>
+<li><a href="#goal">Goal</a></li>
+<li><a href="#the-algorithm">The algorithm</a></li>
+<li><a href="#why-build-a-safe-path-first">Why build a safe path
+first?</a></li>
+</ul></li>
+<li><a href="#how-drawing-works">How Drawing Works</a></li>
+<li><a href="#oop-lessons-in-this-project">OOP Lessons In This
+Project</a>
+<ul>
+<li><a href="#1-encapsulation">1. Encapsulation</a></li>
+<li><a href="#2-separation-of-concerns">2. Separation of
+concerns</a></li>
+<li><a href="#3-abstraction">3. Abstraction</a></li>
+<li><a href="#4-composition">4. Composition</a></li>
+<li><a href="#5-immutability">5. Immutability</a></li>
+</ul></li>
+<li><a href="#suggested-reading-order-for-students">Suggested Reading
+Order For Students</a></li>
+<li><a href="#a-full-example-of-one-key-press">A Full Example Of One Key
+Press</a></li>
+<li><a href="#make-sure-you-understand">Make sure you
+understand</a></li>
+<li><a href="#ideas-for-game-extensions">Ideas for Game
+Extensions</a></li>
+</ul>
+<h2 id="big-idea">Big Idea</h2>
+<p>This project is designed around a very important OOP idea:</p>
+<ul>
+<li>each class should have one clear job</li>
+</ul>
+<p>Instead of putting everything in one giant <code>main</code> method,
+we give each concern its own class:</p>
+<ul>
+<li><strong><code>Robot</code></strong> — Stores the robot’s own state
+only: position, facing direction, and how many moves it has made. It
+does <em>not</em> know about the grid, rocks, or the keyboard; it just
+answers “where would I be if I moved forward?” and “turn
+left/right.”</li>
+<li><strong><code>Grid</code></strong> — Stores the board: number of
+rows and columns, which cells have rocks, and where the goal (charging
+station) is. It answers questions like “Is this position inside the
+grid?” and “Is there a rock here?” but does not know about the
+robot.</li>
+<li><strong><code>RobotController</code></strong> — The rule engine. It
+owns the grid and the robot and decides whether a move is allowed
+(e.g. cannot step off the board or onto a rock). The UI sends commands
+here; the controller executes them and returns a result message. Game
+rules live in this class, not in the UI.</li>
+<li><strong><code>RandomLevelFactory</code></strong> — Builds a new
+puzzle on demand: grid size, start and goal positions, a safe path
+between them, and rocks everywhere else. Returns a
+<code>GameSetup</code> (grid + robot + briefing) so each run or “press
+R” gives a fresh, solvable level.</li>
+<li><strong><code>RobotGame</code></strong> — The user-interface layer.
+It talks to Lanterna: reads key presses, draws the screen (grid,
+sidebar, messages), and turns keys into commands that it sends to the
+controller. It does <em>not</em> decide if a move is legal; it only
+displays what the controller reports.</li>
+</ul>
+<p>That separation makes the code easier to read (each file has one
+job), test (e.g. you can test the controller without a screen), and
+extend (e.g. add a new command without touching the grid or the drawing
+code).</p>
+<h2 id="concepts-covered">Concepts Covered</h2>
+<p>This project reinforces several core programming ideas; each one
+appears in a concrete way in the code:</p>
+<ul>
+<li><strong>Classes and objects</strong> — The game world is modeled as
+objects (<code>Robot</code>, <code>Grid</code>, <code>Position</code>,
+etc.). You create instances, call methods on them, and pass them around
+instead of juggling loose variables.</li>
+<li><strong>Coordinates with <code>row</code> and
+<code>column</code></strong> — We use a 2D grid with zero-based row and
+column indices. The <code>Position</code> class wraps one cell;
+<code>Direction</code> describes how row/column change when the robot
+moves (e.g. North = row − 1).</li>
+<li><strong>Object state</strong> — The robot’s position, direction, and
+move count change over time as the player gives commands. The grid’s
+rocks and goal are fixed for one level. Seeing what changes and what
+stays the same is part of understanding state.</li>
+<li><strong>Enums</strong> — <code>Direction</code> (NORTH, EAST, SOUTH,
+WEST) and <code>Command</code> (MOVE_FORWARD, TURN_LEFT, TURN_RIGHT) are
+enums: a fixed set of named values so the code is readable and the
+compiler can help catch typos.</li>
+<li><strong>Loops</strong> — The game loop (read key → update → draw)
+runs until the user quits. The level generator uses loops to build the
+safe path and place rocks. Iterating over grid rows and columns is used
+in both drawing and logic.</li>
+<li><strong>Method responsibility</strong> — Each method has one job:
+e.g. <code>peekForwardPosition()</code> only computes the next cell; the
+controller decides whether the robot is allowed to move there. Keeping
+methods focused makes the design easier to follow and test.</li>
+<li><strong>Terminal user interfaces</strong> — Instead of a web page or
+a GUI window, the game runs in the terminal. We use the Lanterna library
+to draw the grid, read keys, and handle resize, so you see how a
+text-based UI is structured (buffer, refresh, input).</li>
+<li><strong>Testing</strong> — The project includes automated tests
+(JUnit 5). The main tests are <em>end-to-end</em>: they start a virtual
+terminal, feed in scripted key presses, and assert that the robot and
+game state change correctly. That shows how to test an interactive
+program without a human at the keyboard, and how to use a <em>test
+double</em> (e.g. a scripted level factory) to make tests
+predictable.</li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<p>From the project root:</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compile</td>
+<td><code>./compile.me</code></td>
+</tr>
+<tr>
+<td>Run the game</td>
+<td><code>./run.me</code></td>
+</tr>
+<tr>
+<td>Generate Javadocs</td>
+<td><code>./doc.me</code></td>
+</tr>
+<tr>
+<td>Run tests</td>
+<td><code>./runme</code></td>
+</tr>
+</tbody>
+</table>
+<p>Compile once (or after changing code); then use <code>./run.me</code>
+to play, <code>./doc.me</code> to generate HTML Javadocs, or
+<code>./runme</code> to run the test suite. See <strong>How to Run
+It</strong> and <strong>Automated Testing</strong> below for more
+detail.</p>
+<h2 id="figures">Figures</h2>
+<h3 id="class-relationships">Class relationships</h3>
+<p>This diagram gives you the <strong>structural view</strong> of the
+project. It answers questions such as:</p>
+<ul>
+<li>Which classes belong to the <strong>domain layer</strong> (the game
+world itself)?</li>
+<li>Which classes belong to the <strong>game-logic layer</strong> (rules
+and level generation)?</li>
+<li>Which class belongs to the <strong>UI layer</strong> (drawing and
+keyboard input)?</li>
+<li>Which classes <strong>use</strong>, <strong>create</strong>, or
+<strong>contain</strong> other classes?</li>
+</ul>
+<p>When you read this diagram, start with
+<strong><code>RobotGame</code></strong> at the UI layer. It depends on
+many other classes because it is the top-level coordinator: it starts
+Lanterna, asks <code>RandomLevelFactory</code> for a
+<code>GameSetup</code>, creates a <code>RobotController</code>, reads
+keys, and draws the current state. From there, follow the arrows
+downward into the logic and domain layers to see how the UI relies on
+lower-level objects instead of putting all logic in one place.</p>
+<p>The domain layer is intentionally simpler. <code>Robot</code> stores
+the robot’s own state, <code>Grid</code> stores the board state,
+<code>Position</code> represents one cell, and enums such as
+<code>Direction</code> and <code>Command</code> keep the valid values
+clear and limited. A very important teaching point is that these classes
+do <strong>not</strong> depend on Lanterna. In other words, the game
+world and rules can exist even without the terminal UI.</p>
+<p>The logic layer sits in the middle. <code>RobotController</code>
+applies the rules of movement, <code>RandomLevelFactory</code> creates a
+fresh solvable puzzle, <code>GameSetup</code> groups together the
+starting pieces for one game, and <code>CommandResult</code> carries the
+outcome of one action back to the UI. This middle layer is what lets the
+project stay clean: the UI asks for work to be done, and the logic layer
+decides what actually happens.</p>
+<p>So the big lesson from this diagram is <strong>dependency
+direction</strong>: the UI depends on the game logic and domain objects,
+but the core game objects do not depend on the UI. That one idea is a
+major part of good OOP design because it makes the code easier to test,
+reason about, and extend.</p>
+<figure>
+<img src="figures/class-relations.png" alt="Class relationships" />
+<figcaption aria-hidden="true">Class relationships</figcaption>
+</figure>
+<h3 id="data-flow">Data flow</h3>
+<p>This diagram gives you the <strong>runtime view</strong> of the
+project. Instead of focusing on “which class knows which class,” it
+focuses on <strong>what information moves through the system</strong>
+while the game is running.</p>
+<p>The flow begins with the <strong>player</strong> and the
+<strong>terminal</strong>. A key press such as <code>W</code>,
+<code>A</code>, <code>D</code>, <code>R</code>, or <code>Q</code> is
+captured by Lanterna and turned into structured input for
+<code>RobotGame</code>. The UI does not directly change the robot at
+that point. Instead, it translates the input into a command or
+restart/quit action and sends the important part of that input to the
+correct object.</p>
+<p>From there, two major data paths exist. At startup or restart,
+<code>RobotGame</code> asks <code>RandomLevelFactory</code> to create a
+new <code>GameSetup</code>, which contains a fresh <code>Grid</code>,
+<code>Robot</code>, and briefing message. During normal play,
+<code>RobotGame</code> sends a <code>Command</code> to
+<code>RobotController</code>, which checks the <code>Grid</code>,
+inspects or updates the <code>Robot</code>, and builds a
+<code>CommandResult</code>.</p>
+<p>That <code>CommandResult</code> is important because it carries
+information <strong>back</strong> to the UI: whether the move succeeded,
+whether the goal was reached, and what text message should be shown.
+Then <code>RobotGame</code> redraws the title, grid, legend, and sidebar
+based on the latest robot and grid state, and Lanterna shows the updated
+frame to the player.</p>
+<p>This diagram is useful because it helps students separate
+<strong>objects that store state</strong> from <strong>processes that
+move information around</strong>. <code>Robot</code> and
+<code>Grid</code> are not just boxes on a screen; they are the main
+sources of state. <code>RobotGame</code>,
+<code>RandomLevelFactory</code>, and <code>RobotController</code> act
+more like processors that read state, transform it, and send the results
+onward.</p>
+<figure>
+<img src="figures/data-flow.png" alt="Data flow" />
+<figcaption aria-hidden="true">Data flow</figcaption>
+</figure>
+<h3 id="sample-flow-of-one-turn">Sample flow of one turn</h3>
+<p>This swimlane diagram zooms in further and shows a <strong>single
+turn</strong> in detail. It is the best diagram for understanding the
+question: “What exactly happens after the player presses one key?”</p>
+<p>Each vertical lane represents one participant with one main
+responsibility: the <strong>Player</strong> acts,
+<strong>RobotGame</strong> reads and interprets input,
+<strong>RobotController</strong> applies the rules,
+<strong>Robot</strong> changes its own internal state when told to do
+so, and <strong>Grid</strong> answers board-related questions such as
+whether a move is inside the map or blocked by a rock.</p>
+<p>Read the diagram from top to bottom. The player presses a key,
+<code>RobotGame</code> reads the key and maps it to a command, and then
+the flow branches depending on what kind of key it was. If it is a
+movement or turning command, the controller handles it. If it is a
+restart key, the UI asks for a fresh setup. If it is quit or unknown
+input, the UI handles that case differently. That branching is important
+because real programs rarely have only one straight-line path.</p>
+<p>For a forward move, the diagram shows an especially important OOP
+pattern: <code>RobotGame</code> does <strong>not</strong> move the robot
+directly. Instead, <code>RobotController</code> asks the
+<code>Robot</code> for the next position, asks the <code>Grid</code>
+whether that move is legal, and only then tells the <code>Robot</code>
+to move. This keeps the rules in the controller and keeps the robot
+focused on its own state.</p>
+<p>After the rule check, the controller creates a
+<code>CommandResult</code>, the UI stores the message, and the screen is
+drawn again. So the full story of one turn is not only “input causes
+motion”; it is really <strong>input → interpretation → rule checking →
+state update → result message → redraw</strong>. That is the main
+sequence students should notice in this diagram.</p>
+<figure>
+<img src="figures/swimlane-turn-flow.png"
+alt="Swimlane flow of one turn" />
+<figcaption aria-hidden="true">Swimlane flow of one turn</figcaption>
+</figure>
+<h2 id="project-story">Project Story</h2>
+<p>The player controls a robot called <strong>Robo</strong>: a
+software-only character that lives in the terminal. There is no physical
+robot, no motors or sensors—just a virtual toy that moves on a grid when
+you press keys. That simplicity is deliberate so we can focus on how the
+program is structured.</p>
+<ul>
+<li>The robot starts at a random location.</li>
+<li>The goal cell is the charging station.</li>
+<li>Rocks block movement.</li>
+<li>The player turns the robot and moves it forward.</li>
+<li>Pressing <code>R</code> generates a completely new puzzle.</li>
+</ul>
+<p>Even though the game is simple, it teaches you a lot of important
+programming ideas:</p>
+<ul>
+<li>state changes over time</li>
+<li>input drives behavior</li>
+<li>objects cooperate with one another</li>
+<li><strong>we can separate game rules from display logic</strong> — The
+idea behind patterns like <strong>Model–View–Controller (MVC)</strong>
+shows up here: the <em>model</em> (grid, robot, rules) lives in domain
+and controller classes; the <em>view</em> is the Lanterna drawing in
+<code>RobotGame</code>; the <em>controller</em>
+(<code>RobotController</code>) decides what happens when the player
+acts. The UI does not decide if a move is legal; it only displays the
+result. That separation keeps the code easier to test and change. You
+will see these ideas again in more advanced second-year courses
+(e.g. GUI frameworks and software design and architecture).</li>
+</ul>
+<h2 id="high-level-structure">High-Level Structure</h2>
+<p>There are three layers in this project.</p>
+<h3 id="domain-layer">1. Domain layer</h3>
+<p>These classes describe the game world itself.</p>
+<ul>
+<li><code>Position</code></li>
+<li><code>Direction</code></li>
+<li><code>Command</code></li>
+<li><code>CommandResult</code></li>
+<li><code>Robot</code></li>
+<li><code>Grid</code></li>
+</ul>
+<h3 id="game-logic-layer">2. Game logic layer</h3>
+<p>These classes decide how a game is created and how commands affect
+it.</p>
+<ul>
+<li><code>RobotController</code></li>
+<li><code>RandomLevelFactory</code></li>
+<li><code>GameSetup</code></li>
+</ul>
+<h3 id="ui-layer">3. UI layer</h3>
+<p>This class talks to Lanterna and draws the game in the terminal.</p>
+<ul>
+<li><code>RobotGame</code></li>
+</ul>
+<h2 id="files-that-you-may-want-to-pay-attention-to">Files that you may
+want to pay attention to:</h2>
+<h3 id="srcposition.java"><code>src/Position.java</code></h3>
+<p><code>Position</code> stores one location on the board.</p>
+<ul>
+<li><code>row</code> tells us which horizontal line the cell is on</li>
+<li><code>column</code> tells us which vertical slot the cell is in</li>
+<li><code>translate(...)</code> creates a new position relative to the
+old one</li>
+<li><code>sameCell(...)</code> checks whether two positions refer to the
+same grid cell</li>
+</ul>
+<p>This class is intentionally very small—and that is good design. A
+class that does one thing (here: represent a cell on the grid) is easier
+to understand, easier to test, and less likely to break when you change
+other parts of the program. <strong>Position</strong> is a good example
+of a <strong>POJO</strong> (Plain Old Java Object): no framework magic,
+no inheritance from a library base class—just fields (<code>row</code>,
+<code>column</code>), a constructor, getters, and a few simple methods.
+POJOs are easy to reason about and reuse; many real-world projects rely
+on small, focused classes like this.</p>
+<p>Later, in enterprise-grade projects (e.g. Java EE or Spring), you
+will meet heavier building blocks such as <strong>EJBs</strong>
+(Enterprise Java Beans) or framework-managed beans—classes that depend
+on containers, annotations, and configuration. The idea is similar: each
+component has a clear role. POJOs and value objects like
+<strong>Position</strong> remain the foundation; the more complex pieces
+often wrap or use them. Getting comfortable with small, clear classes
+now will make those later concepts easier to follow.</p>
+<h3 id="srcdirection.java"><code>src/Direction.java</code></h3>
+<p><strong>Java enums</strong> are a way to define a <strong>fixed set
+of named constants</strong> as a type. Instead of using magic numbers or
+strings (e.g. <code>1</code> for North, <code>"EAST"</code> for East),
+you declare the allowed values once, and the compiler ensures that only
+those values can be used. Enums are used whenever you have a small,
+closed set of options: compass directions, days of the week, order
+status (PENDING, SHIPPED, DELIVERED), or—as in this project—the four
+directions the robot can face and the three commands it can execute.
+They make code readable (<code>Direction.NORTH</code> instead of
+<code>-1</code>), and they prevent invalid values (you cannot
+accidentally pass a fifth direction). In this project,
+<strong>Direction</strong> and <strong>Command</strong> are both
+enums.</p>
+<p><code>Direction</code> is an enum with four values:</p>
+<ul>
+<li><code>NORTH</code></li>
+<li><code>EAST</code></li>
+<li><code>SOUTH</code></li>
+<li><code>WEST</code></li>
+</ul>
+<p>Each direction stores how movement changes the coordinate.</p>
+<p>Examples:</p>
+<ul>
+<li>moving north changes the row by <code>-1</code></li>
+<li>moving east changes the column by <code>+1</code></li>
+</ul>
+<p>It also contains:</p>
+<ul>
+<li><code>turnLeft()</code></li>
+<li><code>turnRight()</code></li>
+<li><code>move(Position position)</code></li>
+</ul>
+<p>This is a nice example of putting behavior inside the enum instead of
+scattering turning logic all over the project.</p>
+<h3 id="srccommand.java"><code>src/Command.java</code></h3>
+<p><code>Command</code> represents the actions our robot
+understands.</p>
+<ul>
+<li><code>MOVE_FORWARD</code></li>
+<li><code>TURN_LEFT</code></li>
+<li><code>TURN_RIGHT</code></li>
+</ul>
+<p>We use an enum because the set of valid commands is fixed and
+small.</p>
+<h3 id="srccommandresult.java"><code>src/CommandResult.java</code></h3>
+<p>When the player presses a key, we do not just want “yes” or “no”.</p>
+<p>We want to know:</p>
+<ul>
+<li>did the command succeed?</li>
+<li>did the robot reach the goal?</li>
+<li>what message should we show to the player?</li>
+</ul>
+<p>That is why <code>CommandResult</code> exists.</p>
+<h3 id="srcrobot.java"><code>src/Robot.java</code></h3>
+<p><code>Robot</code> stores the robot’s own state:</p>
+<ul>
+<li>name</li>
+<li>current position</li>
+<li>facing direction</li>
+<li>number of successful forward moves</li>
+</ul>
+<p>Important design choice:</p>
+<ul>
+<li><code>Robot</code> does not know about rocks or screen drawing</li>
+</ul>
+<p>That is the controller’s job, not the robot’s job.</p>
+<h3 id="srcgrid.java"><code>src/Grid.java</code></h3>
+<p><code>Grid</code> stores the board:</p>
+<ul>
+<li>number of rows</li>
+<li>number of columns</li>
+<li>rock locations</li>
+<li>goal location</li>
+</ul>
+<p>Rocks are stored in a <code>boolean[][]</code> array.</p>
+<p>That means:</p>
+<ul>
+<li><code>true</code> means there is a rock in that cell</li>
+<li><code>false</code> means there is no rock in that cell</li>
+</ul>
+<p>Important methods:</p>
+<ul>
+<li><code>isInside(...)</code></li>
+<li><code>hasRock(...)</code></li>
+<li><code>isGoal(...)</code></li>
+<li><code>addRock(...)</code></li>
+</ul>
+<h3
+id="srcrobotcontroller.java"><code>src/RobotController.java</code></h3>
+<p><code>RobotController</code> is one of the most important classes in
+the whole project.</p>
+<p>This class is the rule engine.</p>
+<p>Its job is to answer questions like:</p>
+<ul>
+<li>can the robot move forward?</li>
+<li>is there a rock in the next cell?</li>
+<li>would the robot leave the board?</li>
+<li>what message should the player see?</li>
+</ul>
+<p>This is a good OOP habit:</p>
+<ul>
+<li>UI code should not decide game rules</li>
+<li>rule code should not draw the UI</li>
+</ul>
+<h3 id="srcgamesetup.java"><code>src/GameSetup.java</code></h3>
+<p><code>GameSetup</code> is a small container class that groups
+together:</p>
+<ul>
+<li>the grid</li>
+<li>the robot</li>
+<li>the opening message</li>
+</ul>
+<p>This makes it easier for <code>RandomLevelFactory</code> to return
+one object instead of several separate pieces.</p>
+<h3
+id="srcrandomlevelfactory.java"><code>src/RandomLevelFactory.java</code></h3>
+<p>This class creates a brand-new puzzle.</p>
+<p>Its job is to:</p>
+<ol type="1">
+<li>choose a board size</li>
+<li>choose a robot start position</li>
+<li>choose a goal position</li>
+<li>build a guaranteed safe path</li>
+<li>place rocks on other cells</li>
+</ol>
+<p>This class is a strong example of abstraction:</p>
+<ul>
+<li>the rest of the program does not need to know how level generation
+works</li>
+<li>it only needs a finished <code>GameSetup</code></li>
+</ul>
+<h3 id="srcrobotgame.java"><code>src/RobotGame.java</code></h3>
+<p><code>RobotGame</code> is the Lanterna UI class.</p>
+<p>It is responsible for:</p>
+<ul>
+<li>creating the terminal screen</li>
+<li>reading key presses</li>
+<li>starting and restarting the game</li>
+<li>drawing the title, grid, sidebar, and messages</li>
+<li>reacting to terminal resize events</li>
+</ul>
+<p><strong>Here is an overview of what we are doing here:</strong></p>
+<p><strong>1. The job of the UI layer.</strong><br />
+<code>RobotGame</code> is the only class that talks directly to the
+terminal. Its job is to <em>present</em> the game and <em>forward</em>
+user input. It does not decide whether a move is legal, where rocks are,
+or how the level is built. Those decisions live in
+<code>RobotController</code>, <code>Grid</code>, and
+<code>RandomLevelFactory</code>. By keeping all terminal and drawing
+code in one place, we make the rest of the program independent of
+Lanterna and easy to test without a real screen.</p>
+<p><strong>2. Starting up.</strong><br />
+In <code>main</code>, we create a Lanterna terminal and screen: a
+<code>DefaultTerminalFactory</code>, an initial size, and a
+<code>TerminalScreen</code>. We then hand that screen to
+<code>runGameLoop</code>. That way, the game runs in a buffered text
+display instead of a raw console, so we can redraw the whole frame
+(grid, sidebar, messages) in one go instead of appending lines.</p>
+<p><strong>3. The game loop.</strong><br />
+Inside <code>runGameLoop</code>, we create the first level (via
+<code>RandomLevelFactory</code>), a <code>RobotController</code>, and a
+message string. Then we loop: sync the screen size in case the user
+resized the window, draw the current frame, read one key, and react. The
+loop runs until the user quits (e.g. Q or EOF). Restart (R) is handled
+by creating a new <code>GameSetup</code> and a new controller, so the
+next iteration draws and reacts using the new state.</p>
+<p><strong>4. From keys to commands.</strong><br />
+When a key is read, we map it to a <code>Command</code> (move forward,
+turn left, turn right) or to a special action (quit, restart). Unknown
+keys produce a “that key does not control Robo” message. We do not
+interpret keys as game rules; we only turn them into commands and pass
+them to the controller. The controller returns a
+<code>CommandResult</code> (success/failure, goal reached or not,
+message), and we display that message and, if the goal was reached,
+append a short “Mission complete” line.</p>
+<p><strong>5. Drawing one frame.</strong><br />
+Each frame we clear the screen, then draw the title, instructions, grid
+(with row/column labels and one symbol per cell: robot, goal, rock, or
+empty), and the sidebar (robot name, position, direction, goal, move
+count, legend, and the current message). We choose colors and symbols so
+the robot, goal, and rocks are easy to see. If the terminal is too small
+to show the full grid, we draw a “terminal too small” message instead of
+crashing. Layout (sidebar beside or below the grid) is chosen from the
+current terminal size so the game adapts to the window.</p>
+<p><strong>6. Safety and layout.</strong><br />
+We avoid drawing outside the terminal by clipping text to the visible
+area (<code>safePutString</code>). We also handle resize: at the start
+of each loop we call <code>syncScreenSize</code> so our layout and
+drawing use the latest dimensions. Long messages in the sidebar are
+wrapped to a few lines so the panel stays readable. All of this is
+orchestration: the UI has to coordinate size, layout, and many small
+drawing steps, which is why this class has more methods and branches
+than the domain or controller classes.</p>
+<p><strong>7. Why this class is larger.</strong><br />
+UI code often needs more orchestration than domain or logic code. One
+class is responsible for startup, the loop, key mapping, drawing the
+grid, drawing the sidebar, choosing layout, handling “too small” and
+resize, and safe string placement. Each of those is a clear sub-task,
+but there are many of them, so the file is longer. The important point
+is that <code>RobotGame</code> still has one overall responsibility:
+<em>the interface between the player and the rest of the game</em>. It
+does not contain game rules or data structures for the board; it only
+displays and forwards input.</p>
+<p><code>RobotGame</code> depends on <code>RobotController</code>,
+<code>Grid</code>, <code>Robot</code>, and the supporting types
+(<code>Position</code>, <code>Direction</code>, <code>Command</code>,
+<code>CommandResult</code>, <code>GameSetup</code>,
+<code>RandomLevelFactory</code>). It gets the current state from the
+controller and the level factory, draws that state, and sends commands
+back to the controller. So the flow is: <em>input → RobotGame (map key
+to command) → RobotController (apply rules, update robot/grid) →
+RobotGame (draw updated state)</em>. That separation of concerns is what
+allows us to test the controller without a terminal and to change the UI
+(e.g. different keys or layout) without touching the game rules.</p>
+<h2 id="how-to-run-it">How to Run It</h2>
+<p>Compile:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./compile.me</span></span></code></pre></div>
+<p>Run:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./run.me</span></span></code></pre></div>
+<p>Generate the Javadocs:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./doc.me</span></span></code></pre></div>
+<p>This writes the generated HTML documentation to
+<code>docs/javadoc/index.html</code>.</p>
+<p>Run the automated tests:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./runme</span></span></code></pre></div>
+<p>This project builds against the local <a
+href="https://github.com/mabe02/lanterna">Lanterna</a> source checkout
+in <code>vendor/lanterna</code>, so <code>compile.me</code> installs
+that source build before compiling the game.</p>
+<h2 id="how-the-lanterna-source-works">How the Lanterna source
+works</h2>
+<p>The <code>vendor/lanterna</code> folder is a full local copy of the
+Lanterna library source code. That means the project does not treat
+Lanterna as a hidden black box downloaded from the internet every time.
+Instead, students can open the library files, read the code, and see how
+a real Java terminal UI library is organized internally.</p>
+<p>Our own game code lives in <code>src</code>, while the library code
+lives in <code>vendor/lanterna</code>. That separation is important
+because it teaches a common software-engineering idea: your application
+code uses other people’s libraries, but those libraries are usually
+large projects with their own design, packages, tests, and build files.
+Seeing both side by side helps students understand where their code ends
+and where a dependency begins.</p>
+<p>The word “vendor” here means “we copied in the dependency source on
+purpose.” Teams sometimes vendor a library when they want stable builds,
+local debugging, or the ability to inspect the exact version they are
+using. In a teaching project, vendoring is especially useful because
+students can trace a method call from their own game directly into the
+library that powers it.</p>
+<p>Lanterna itself is not our game. Lanterna is a reusable toolkit for
+making terminal applications in Java, and our robot game is one example
+program built on top of that toolkit. Students should think of Lanterna
+the same way they think of a graphics engine or a collections library:
+it provides tools and abstractions, while our classes decide the game
+rules and story.</p>
+<p>The build process shows how the vendored source becomes available to
+our project. When <code>compile.me</code> runs, it first executes Maven
+inside <code>vendor/lanterna</code> and installs Lanterna into the local
+Maven repository on the computer. After that, our main
+<code>pom.xml</code> can depend on that locally built artifact just like
+it would depend on a library from Maven Central.</p>
+<p>This local-install step is the bridge between the two projects. The
+Lanterna source tree has its own <code>pom.xml</code>, source folders,
+and package structure, so Maven treats it as a standalone Java library.
+Once Maven installs it locally, our robot project can say “I depend on
+<code>com.googlecode.lanterna:lanterna:3.2.0-SNAPSHOT</code>” and the
+compiler knows where to find those classes.</p>
+<p>One big-picture idea inside Lanterna is that it separates low-level
+terminal access from higher-level screen drawing. A raw terminal can
+print characters, move the cursor, change colors, and read key presses,
+but doing that directly is awkward. Lanterna wraps those details in
+objects so applications like our game can think in terms of screens,
+text graphics, and key strokes instead of raw escape sequences.</p>
+<p>The <code>terminal</code> package in Lanterna is the lower layer. It
+deals with the concept of a terminal window itself: size, cursor
+position, text output, input events, and resize notifications. When
+students see <code>DefaultTerminalFactory</code> in our game, they are
+using this lower layer indirectly to create the real terminal
+connection.</p>
+<p>The <code>screen</code> package sits on top of the terminal package
+and gives us a buffered drawing model. Instead of printing every
+character directly to the terminal one by one, we draw into a screen
+buffer and then call <code>refresh()</code>. This is why our UI feels
+more like a game screen than a stream of <code>println(...)</code>
+calls, and it also explains why <code>TerminalScreen</code> is one of
+the most important Lanterna classes for our project.</p>
+<p>The <code>graphics</code> package is what makes drawing comfortable.
+It gives us helper objects such as <code>TextGraphics</code>, which let
+us place strings at coordinates, set colors, and use styles like bold
+text. In our code, methods such as <code>drawGrid(...)</code> and
+<code>drawSidebar(...)</code> rely on these graphics helpers so the
+drawing code reads like “draw this text here” rather than a long series
+of low-level terminal instructions.</p>
+<p>The <code>input</code> package gives Lanterna a clean language for
+keyboard events. Instead of our game parsing raw bytes from the
+terminal, Lanterna converts them into objects like
+<code>KeyStroke</code> and labels them with types such as
+<code>CHARACTER</code>, <code>ARROW_UP</code>, or <code>EOF</code>. That
+is why our <code>RobotGame</code> code can simply switch on the key type
+and map it to <code>MOVE_FORWARD</code>, <code>TURN_LEFT</code>, or
+<code>TURN_RIGHT</code>.</p>
+<p>The <code>virtual</code> terminal support inside Lanterna is
+especially valuable for teaching and testing. A virtual terminal behaves
+like a terminal in memory, without needing a student to sit there and
+press real keys. That lets our tests start a real
+<code>TerminalScreen</code>, push in fake key presses, and verify that
+the game loop responds correctly, which is a powerful example of testing
+an interactive program end to end.</p>
+<p>Lanterna also contains higher-level GUI support in packages such as
+<code>gui2</code>, even though our robot project does not use that
+layer. This is a nice lesson in library design: a mature library often
+supports multiple levels of abstraction so different programs can choose
+the amount of power or simplicity they need. Our game stays with the
+screen-and-graphics layer because it is easier for beginners to
+understand.</p>
+<p>Another useful thing students can notice is that the Lanterna source
+tree looks like a real professional library project. It has many
+packages, documentation files, tests, and examples because it is
+designed to be reused by many different applications. That helps
+students see that libraries are not magic; they are simply other Java
+projects with good organization and a broader purpose.</p>
+<p>In our specific game, the first Lanterna object we touch is
+<code>DefaultTerminalFactory</code>. Its job is to create a terminal
+implementation that matches the current environment, which might be a
+normal terminal window or something else supported by Lanterna. We then
+wrap that terminal in <code>TerminalScreen</code>, because our game
+wants the higher-level buffered drawing features from the screen
+layer.</p>
+<p>Once the screen exists, our code uses Lanterna in a repeating cycle:
+clear the screen, draw text, refresh the screen, read one key, update
+the game state, and loop. That cycle is the practical connection between
+the library and our OOP design. Lanterna handles the “how do I talk to
+the terminal?” problem, while our own classes handle the “what does this
+key mean for the robot?” problem.</p>
+<p>The resize behavior is another place where the library structure
+matters. Lanterna tracks terminal size changes and exposes them through
+methods such as <code>doResizeIfNecessary()</code>, so our game can
+redraw safely after the window changes. Because the library already
+solves the detection and buffering problem, our code can focus on layout
+decisions such as whether the sidebar should appear beside the grid or
+below it.</p>
+<p>Keeping the Lanterna source locally also makes debugging much richer.
+If the game crashes inside a library call, students can step into that
+method in the IDE and inspect what the library is doing. This turns
+debugging into a learning opportunity, because students can observe how
+a third-party API turns their high-level method calls into internal
+state changes.</p>
+<p>There is also an important software-design lesson in not editing the
+vendored code casually. Our game should normally adapt by changing
+classes in <code>src</code>, not by rewriting library internals every
+time we want new behavior. The vendored source is there mainly so we can
+understand, debug, and occasionally patch with care, while keeping a
+clear boundary between application logic and dependency logic.</p>
+<p>The big picture is that <code>vendor/lanterna</code> is the engine
+room that makes the interactive terminal experience possible, while our
+own classes are the game rules and teaching examples built on top of it.
+Students do not need to memorize the whole library, but they should
+understand the layers: terminal access at the bottom, buffered screens
+and drawing in the middle, and our robot game at the top. Once they see
+that stack clearly, the whole project becomes much easier to reason
+about.</p>
+<h2 id="automated-testing">Automated Testing</h2>
+<p>This project uses JUnit 5 for automated testing. JUnit gives us a
+standard way to write test methods, make assertions, and run the full
+suite from Maven or a small helper script.</p>
+<p>The most important test file is
+<code>src/test/java/RobotGameE2ETest.java</code>. Those tests start a
+Lanterna <code>DefaultVirtualTerminal</code>, wrap it in a real
+<code>TerminalScreen</code>, feed in keyboard input, and let
+<code>RobotGame</code> run its actual loop. That means the tests cover
+the same path a real player uses: key press, input mapping, controller
+logic, robot movement, and screen updates.</p>
+<p>The test code is heavily commented so students can learn from it. It
+shows how to build predictable <code>GameSetup</code> objects for
+testing, how to create a small test double for
+<code>RandomLevelFactory</code>, and how to run a blocking game loop on
+a background thread while the test script pushes key events into the
+virtual terminal.</p>
+<p>We currently test three end-to-end behaviors. One test proves that
+movement keys really change robot state, another proves that
+<code>R</code> replaces the current setup with a new one, and a third
+proves that many rapid restarts do not crash the game loop.</p>
+<p>You can run the tests with either <code>mvn test</code> or
+<code>./runme</code>. The <code>runme</code> script first installs the
+vendored Lanterna source and then runs the JUnit suite, so students only
+need a single command when they want to check whether the project still
+works.</p>
+<h2 id="controls">Controls</h2>
+<ul>
+<li><code>W</code> or Up Arrow: move forward</li>
+<li><code>A</code> or Left Arrow: turn left</li>
+<li><code>D</code> or Right Arrow: turn right</li>
+<li><code>R</code>: load a fresh random map</li>
+<li><code>Q</code>: quit</li>
+</ul>
+<h2 id="how-the-program-runs">How The Program Runs</h2>
+<p>Here is the full flow from program start to gameplay.</p>
+<h3 id="step-1.-main-creates-the-lanterna-screen">Step 1.
+<code>main</code> creates the Lanterna screen</h3>
+<p>In <code>RobotGame.main(...)</code> we:</p>
+<ol type="1">
+<li>create a <code>DefaultTerminalFactory</code></li>
+<li>give it an initial terminal size</li>
+<li>create a <code>TerminalScreen</code></li>
+<li>start the screen</li>
+<li>call <code>runGameLoop(...)</code></li>
+</ol>
+<p>Lanterna’s <code>Screen</code> acts like a buffered canvas for
+text.</p>
+<h3 id="step-2.-rungameloop...-creates-the-first-game">Step 2.
+<code>runGameLoop(...)</code> creates the first game</h3>
+<p>Inside <code>runGameLoop(...)</code> we create:</p>
+<ul>
+<li>a <code>RandomLevelFactory</code></li>
+<li>a <code>GameSetup</code></li>
+<li>a <code>RobotController</code></li>
+<li>a message string</li>
+</ul>
+<p>Now the game has everything it needs to begin.</p>
+<h3 id="step-3.-the-loop-repeats-forever-until-the-player-quits">Step 3.
+The loop repeats forever until the player quits</h3>
+<p>Each loop does this:</p>
+<ol type="1">
+<li>check whether the terminal size changed</li>
+<li>draw the current frame</li>
+<li>wait for one key press</li>
+<li>react to the key press</li>
+</ol>
+<h3 id="step-4.-keys-are-translated-into-commands">Step 4. Keys are
+translated into commands</h3>
+<p>Examples:</p>
+<ul>
+<li><code>W</code> or Up Arrow becomes <code>MOVE_FORWARD</code></li>
+<li><code>A</code> or Left Arrow becomes <code>TURN_LEFT</code></li>
+<li><code>D</code> or Right Arrow becomes <code>TURN_RIGHT</code></li>
+</ul>
+<p>This happens in:</p>
+<ul>
+<li><code>mapKeyToCommand(...)</code></li>
+<li><code>mapCharacterKey(...)</code></li>
+</ul>
+<h3 id="step-5.-the-controller-applies-the-rules">Step 5. The controller
+applies the rules</h3>
+<p><code>RobotGame</code> calls:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>controller<span class="op">.</span><span class="fu">execute</span><span class="op">(</span>command<span class="op">);</span></span></code></pre></div>
+<p>Then <code>RobotController</code> decides what happens.</p>
+<p>If the player tries to move:</p>
+<ul>
+<li>off the board, the robot stays still</li>
+<li>into a rock, the robot stays still</li>
+<li>into an open cell, the robot moves</li>
+</ul>
+<h3 id="step-6.-a-commandresult-comes-back">Step 6. A
+<code>CommandResult</code> comes back</h3>
+<p>That result includes:</p>
+<ul>
+<li>success or failure</li>
+<li>whether the goal was reached</li>
+<li>a message for the sidebar</li>
+</ul>
+<h3 id="step-7.-the-next-frame-is-drawn">Step 7. The next frame is
+drawn</h3>
+<p>The game loop runs again, so the player sees the new board state
+immediately.</p>
+<h2 id="how-random-map-generation-works">How Random Map Generation
+Works</h2>
+<p>This is one of the most interesting parts of the project.</p>
+<h3 id="goal">Goal</h3>
+<p>We want each board to be random, but still playable.</p>
+<p>That means:</p>
+<ul>
+<li>the robot must start inside the board</li>
+<li>the goal must be different from the start</li>
+<li>rocks should make the board interesting</li>
+<li>the goal must still be reachable</li>
+</ul>
+<h3 id="the-algorithm">The algorithm</h3>
+<p><code>RandomLevelFactory.createSetup(...)</code> works like this:</p>
+<ol type="1">
+<li>choose the number of rows and columns</li>
+<li>choose a random start position</li>
+<li>choose a random goal position</li>
+<li>build a “safe path” from start to goal</li>
+<li>place rocks only on cells not reserved by the safe path</li>
+</ol>
+<h3 id="why-build-a-safe-path-first">Why build a safe path first?</h3>
+<p>If we placed rocks completely randomly, we might block the goal by
+accident.</p>
+<p>Instead, we first mark cells that must stay open.</p>
+<p>That safe path is built by:</p>
+<ul>
+<li>moving toward an intermediate row or column</li>
+<li>then moving toward the goal</li>
+</ul>
+<p>This creates a simple but guaranteed route.</p>
+<h2 id="how-drawing-works">How Drawing Works</h2>
+<p>Lanterna does not work like <code>System.out.println(...)</code>.</p>
+<p>Instead:</p>
+<ol type="1">
+<li>we draw into a screen buffer</li>
+<li>we call <code>screen.refresh()</code></li>
+<li>Lanterna updates the real terminal</li>
+</ol>
+<h3 id="main-drawing-methods">Main drawing methods</h3>
+<ul>
+<li><code>draw(...)</code> paints a whole frame</li>
+<li><code>drawGrid(...)</code> paints the board</li>
+<li><code>drawSidebar(...)</code> paints status and instructions</li>
+</ul>
+<h3 id="why-do-we-use-safeputstring...">Why do we use
+<code>safePutString(...)</code>?</h3>
+<p>Terminal windows can be resized while the game is running.</p>
+<p>If we try to draw outside the visible screen area, some terminal
+libraries behave badly.</p>
+<p>So <code>safePutString(...)</code>:</p>
+<ul>
+<li>checks row bounds</li>
+<li>checks column bounds</li>
+<li>clips long strings to fit the terminal</li>
+</ul>
+<p>That makes the UI safer and more robust.</p>
+<h3 id="why-do-we-call-screen.doresizeifnecessary">Why do we call
+<code>screen.doResizeIfNecessary()</code>?</h3>
+<p>Lanterna keeps internal buffers for the screen.</p>
+<p>If the terminal size changes, those buffers need to be updated.</p>
+<p>That is why <code>syncScreenSize(...)</code> runs near the start of
+every game loop iteration.</p>
+<h2 id="oop-lessons-in-this-project">OOP Lessons In This Project</h2>
+<h3 id="encapsulation">1. Encapsulation</h3>
+<p>Each class hides its own data and exposes methods for safe use.</p>
+<p>Examples:</p>
+<ul>
+<li><code>Robot</code> controls its own movement</li>
+<li><code>Grid</code> controls its own rock data</li>
+</ul>
+<h3 id="separation-of-concerns">2. Separation of concerns</h3>
+<p>We separate:</p>
+<ul>
+<li>world state</li>
+<li>game rules</li>
+<li>user interface</li>
+</ul>
+<p>This is one of the most valuable design lessons in the project.</p>
+<h3 id="abstraction">3. Abstraction</h3>
+<p>The rest of the program does not need to know how random generation
+works.</p>
+<p>It only needs:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>GameSetup setup <span class="op">=</span> factory<span class="op">.</span><span class="fu">createSetup</span><span class="op">(</span>terminalSize<span class="op">);</span></span></code></pre></div>
+<h3 id="composition">4. Composition</h3>
+<p>Objects are built out of other objects.</p>
+<p>Examples:</p>
+<ul>
+<li><code>RobotController</code> contains a <code>Grid</code> and a
+<code>Robot</code></li>
+<li><code>GameSetup</code> contains a <code>Grid</code>,
+<code>Robot</code>, and briefing string</li>
+</ul>
+<h3 id="immutability">5. Immutability</h3>
+<p><code>Position</code> is immutable.</p>
+<p>That means:</p>
+<ul>
+<li>once created, a <code>Position</code> object never changes</li>
+<li>movement creates a new <code>Position</code></li>
+</ul>
+<p>This reduces bugs and makes the logic easier to follow.</p>
+<h2 id="suggested-reading-order-for-students">Suggested Reading Order
+For Students</h2>
+<p>If students are opening the files one by one, this order works
+well:</p>
+<ol type="1">
+<li><code>Position.java</code></li>
+<li><code>Direction.java</code></li>
+<li><code>Command.java</code></li>
+<li><code>Robot.java</code></li>
+<li><code>Grid.java</code></li>
+<li><code>CommandResult.java</code></li>
+<li><code>RobotController.java</code></li>
+<li><code>GameSetup.java</code></li>
+<li><code>RandomLevelFactory.java</code></li>
+<li><code>RobotGame.java</code></li>
+</ol>
+<p>That order moves from the smallest ideas to the largest one.</p>
+<h2 id="a-full-example-of-one-key-press">A Full Example Of One Key
+Press</h2>
+<p>Suppose the player presses <code>W</code>.</p>
+<h3 id="what-happens">What happens?</h3>
+<ol type="1">
+<li>Lanterna reads the key in <code>screen.readInput()</code></li>
+<li><code>RobotGame.mapKeyToCommand(...)</code> converts it to
+<code>MOVE_FORWARD</code></li>
+<li><code>RobotGame.toCommandResult(...)</code> sends it to
+<code>RobotController</code></li>
+<li><code>RobotController.moveForward()</code> checks the next cell</li>
+<li>if legal, <code>Robot.moveForward()</code> updates the robot</li>
+<li><code>CommandResult</code> is returned</li>
+<li><code>RobotGame.draw(...)</code> paints the updated board</li>
+</ol>
+<p>This is an example of objects collaborating: - <code>Position</code>
+is a small class that helps students stop passing raw numbers
+everywhere. - <code>Grid</code> and <code>Robot</code> have separate
+jobs, which is a good early OOP habit. - <code>RobotController</code> is
+the rule engine, while <code>RobotGame</code> is only responsible for
+the Lanterna interface. - <code>RandomLevelFactory</code> shows how one
+class can build objects for the rest of the program. - The drawing code
+uses loops to render rows and columns on the screen.</p>
+<h2 id="make-sure-you-understand">Make sure you understand:</h2>
+<ul>
+<li>Why is <code>Position</code> immutable?</li>
+<li>Why does <code>Robot</code> not check for rocks by itself?</li>
+<li>Why is <code>RandomLevelFactory</code> a separate class?</li>
+<li>Why do we return a <code>CommandResult</code> instead of just
+<code>true</code> or <code>false</code>?</li>
+<li>What would break if drawing logic were mixed into
+<code>RobotController</code>?</li>
+</ul>
+<h2 id="ideas-for-game-extensions">Ideas for Game Extensions</h2>
+<ul>
+<li>Add <code>MOVE_BACKWARD</code></li>
+<li>Let the robot collect coins</li>
+<li>Add a score system (collect the most coins while taking the shortest
+path)</li>
+<li>Add multiple levels</li>
+<li>Add more than one goal</li>
+<li>Count turns as well as forward moves</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+# Build the vendored Lanterna source first so the tests use the local library checkout.
+mvn -q -f vendor/lanterna/pom.xml -DskipTests install
+
+# Run the robot game's automated JUnit test suite.
+mvn test

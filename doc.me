@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+
+# Build the vendored Lanterna source first so Javadoc can resolve imported types.
+mvn -q -f vendor/lanterna/pom.xml -DskipTests install
+
+LOCAL_REPO=$(mvn -q help:evaluate -Dexpression=settings.localRepository -DforceStdout 2>/dev/null)
+LANTERNA_JAR="$LOCAL_REPO/com/googlecode/lanterna/lanterna/3.2.0-SNAPSHOT/lanterna-3.2.0-SNAPSHOT.jar"
+OUTPUT_DIR="docs/javadoc"
+
+if [ ! -f "$LANTERNA_JAR" ]; then
+    echo "Could not find the Lanterna jar at $LANTERNA_JAR" >&2
+    exit 1
+fi
+
+mkdir -p "$OUTPUT_DIR"
+
+javadoc \
+    -quiet \
+    -Xdoclint:none \
+    -d "$OUTPUT_DIR" \
+    -classpath "$LANTERNA_JAR" \
+    src/*.java
+
+echo "Javadocs generated in $OUTPUT_DIR/index.html"
